@@ -5,7 +5,7 @@ from .models import Tweet
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
-    return HttpResponse("<h1>Hello World</h1>")
+    return render(request,"pages/home.html",{})
 
 def tweet_detail_view(request, tweet_id, *args, **kwargs):
     """
@@ -24,3 +24,21 @@ def tweet_detail_view(request, tweet_id, *args, **kwargs):
         data['message'] = "Not found"
         status = 404
     return JsonResponse(data, status=status) # json.dumps content_type='application/json'
+
+def tweets(request):
+	data = {'tweets':""}
+	obj = []
+	status = 200
+	try:
+		obj = Tweet.objects.all()
+		tweets = []
+		ids = []
+		for x in obj:
+			tweets.append(x.content)
+			ids.append(x.id)
+		data['tweets'] = tweets
+		data['ids'] = ids
+	except:
+		data['message'] = 'Not Found'
+		status = 404
+	return JsonResponse(data, status=status)
